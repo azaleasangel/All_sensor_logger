@@ -132,11 +132,11 @@ public class NetworkCheckService extends Service {
                     final String path=file.getPath();
                     String parent = file.getParent();
                     parent = parent.substring(parent.lastIndexOf("/") + 1, parent.length());
-                    //TODO:upload
-                    /*API.upload_file(file.getPath(), sharedPreferences.getString("token", null),
+                    API.upload_file(file.getParent(), sharedPreferences.getString("token", null),
                             sharedPreferences.getString(parent+"_type", null),
                             sharedPreferences.getString(parent+"_age" , null),
                             file.getName(),
+                            sharedPreferences.getString(parent+"_account",null),
                             new ResponseListener() {
                                 public void onResponse(JSONObject response) {
                                     File file=new File(path);
@@ -154,7 +154,7 @@ public class NetworkCheckService extends Service {
                                     }
                                     Log.d("Tag", String.valueOf(error.networkResponse.statusCode));
                                 }
-                            });*/
+                            });
                 }
             }
         }
