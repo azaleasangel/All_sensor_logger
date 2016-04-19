@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".AgreementPage">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="使用規約"
+            android:id="@+id/title"
+            android:layout_below="@+id/scrollView"
+            android:layout_centerHorizontal="true"
+            android:textSize="50dp"
+            android:layout_weight="1.0"/>
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView"
+            android:layout_weight="15.0">
+            <TextView
+
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+
+                android:text="this is the place for user content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_above="@+id/argee"
+                android:layout_below="@+id/title"
+                android:id="@+id/content" />
+
+
+        </ScrollView>
+
+        <LinearLayout android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_weight="1.5"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="同意"
+                android:id="@+id/argee"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_weight="1.0"
+                android:onClick="argee_click" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="不同意"
+                android:id="@+id/disargee"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/content"
+                android:layout_alignEnd="@+id/content"
+                android:layout_weight="1.0"
+                android:onClick="disargee_click" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</RelativeLayout>
