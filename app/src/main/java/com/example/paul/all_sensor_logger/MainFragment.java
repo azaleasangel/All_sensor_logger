@@ -78,6 +78,8 @@ public class MainFragment extends Fragment
     private TextView user;
     private String path;
     private String ts;
+    private int IsFileOpen = 0;
+    private Sensor[] SensorList = new Sensor[5];
     @Override
     public void onAttach(Activity activity)
     {
@@ -105,6 +107,8 @@ public class MainFragment extends Fragment
         user.append(sharedPreferences.getString("account","N//A"));
         /*get sensor*/
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+
+        IsFileOpen = 0;
 
         String a = "CarType1";
         String b = "CarAge1";
@@ -196,7 +200,11 @@ public class MainFragment extends Fragment
     public void onDestroy(){
         super.onDestroy();
         mSensorManager.unregisterListener(mysensorListener);
-        close_all();
+        if(IsFileOpen == 1)
+        {
+            close_all();
+            IsFileOpen = 0;
+        }
     }
 
 
@@ -214,22 +222,27 @@ public class MainFragment extends Fragment
                 {
                     case Sensor.TYPE_ACCELEROMETER:
                         file_acc.write(data.getBytes());
+                        IsFileOpen = 1;
                         break;
 
                     case Sensor.TYPE_GYROSCOPE:
                         file_gro.write(data.getBytes());
+                        IsFileOpen = 1;
                         break;
 
                     case Sensor.TYPE_MAGNETIC_FIELD:
                         file_mag.write(data.getBytes());
+                        IsFileOpen = 1;
                         break;
 
                     case Sensor.TYPE_LIGHT:
                         file_lig.write(data.getBytes());
+                        IsFileOpen = 1;
                         break;
 
                     case Sensor.TYPE_PRESSURE:
                         file_pre.write(data.getBytes());
+                        IsFileOpen = 1;
                         break;
 
                     default:
@@ -501,6 +514,22 @@ public class MainFragment extends Fragment
             }
             else
             {
+                /*Start  listening*/
+                for(int i = 0;i < 5;i++)
+                {
+                    SensorList[i] = null;
+                }
+                SensorList[0] = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                mSensorManager.registerListener(mysensorListener, SensorList[0] , SensorManager.SENSOR_DELAY_FASTEST);
+                SensorList[1] = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+                mSensorManager.registerListener(mysensorListener,SensorList[1] , SensorManager.SENSOR_DELAY_FASTEST);
+                SensorList[2] = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+                mSensorManager.registerListener(mysensorListener,SensorList[2] , SensorManager.SENSOR_DELAY_FASTEST);
+                SensorList[3] = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+                mSensorManager.registerListener(mysensorListener,SensorList[3] , SensorManager.SENSOR_DELAY_FASTEST);
+                SensorList[4] = mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+                mSensorManager.registerListener(mysensorListener,SensorList[4] , SensorManager.SENSOR_DELAY_FASTEST);
+
                 Long tsLong = System.currentTimeMillis()/1000;
                 ts = tsLong.toString();
 
@@ -523,27 +552,32 @@ public class MainFragment extends Fragment
                 File tempfile_pre=new File(path,(filename_pre));
 
                 try {
-                    file_acc=new FileOutputStream(tempfile_acc);
-                    Log.d("Tag","ACC fileopen");
-                    file_gro=new FileOutputStream(tempfile_gro);
-                    Log.d("Tag","GRO fileopen");
-                    file_mag=new FileOutputStream(tempfile_mag);
-                    Log.d("Tag","MAG fileopen");
-                    file_lig=new FileOutputStream(tempfile_lig);
-                    Log.d("Tag","LIG fileopen");
-                    file_mag=new FileOutputStream(tempfile_pre);
-                    Log.d("Tag","PRE fileopen");
+                    if(SensorList[0] !=null) {
+                        file_acc = new FileOutputStream(tempfile_acc);
+                        Log.d("Tag", "ACC fileopen");
+                    }
+                    if(SensorList[1] !=null) {
+                        file_gro = new FileOutputStream(tempfile_gro);
+                        Log.d("Tag", "GRO fileopen");
+                    }
+                    if(SensorList[2] !=null) {
+                        file_mag = new FileOutputStream(tempfile_mag);
+                        Log.d("Tag", "MAG fileopen");
+                    }
+                    if(SensorList[3] !=null) {
+                        file_lig = new FileOutputStream(tempfile_lig);
+                        Log.d("Tag", "LIG fileopen");
+                    }
+                    if(SensorList[4] !=null) {
+                        file_pre = new FileOutputStream(tempfile_pre);
+                        Log.d("Tag", "PRE fileopen");
+                    }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 startbutton.setText("Stop");
 
-                /*Start  listening*/
-                mSensorManager.registerListener(mysensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(mysensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(mysensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(mysensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_FASTEST);
-                mSensorManager.registerListener(mysensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE), SensorManager.SENSOR_DELAY_FASTEST);
+
             }
 
         }
@@ -623,13 +657,28 @@ public class MainFragment extends Fragment
     private void  close_all()
     {
         try {
-            file_acc.close();
-            file_gro.close();
-            file_mag.close();
-            file_lig.close();
-            file_pre.close();
+            if(SensorList[0] !=null){
+                file_acc.close();
+            }
+            if(SensorList[1] !=null) {
+                file_gro.close();
+            }
+            if(SensorList[2] !=null) {
+                file_mag.close();
+            }
+            if(SensorList[3] !=null) {
+                file_lig.close();
+            }
+            if(SensorList[4] !=null) {
+                file_pre.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        for(int i = 0;i < 5;i++)
+        {
+            SensorList[i] = null;
         }
     }
 }

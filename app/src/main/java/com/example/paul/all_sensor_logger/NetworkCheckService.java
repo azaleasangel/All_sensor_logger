@@ -132,6 +132,10 @@ public class NetworkCheckService extends Service {
                     final String path=file.getPath();
                     String parent = file.getParent();
                     parent = parent.substring(parent.lastIndexOf("/") + 1, parent.length());
+
+                    //Log.d("Tag","parent"+ file.getParent());
+                    //Log.d("Tag", "name"+file.getName());
+
                     API.upload_file(file.getParent(), sharedPreferences.getString("token", null),
                             sharedPreferences.getString(parent+"_type", null),
                             sharedPreferences.getString(parent+"_age" , null),
