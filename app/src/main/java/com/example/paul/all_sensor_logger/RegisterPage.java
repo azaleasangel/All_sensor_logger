@@ -17,8 +17,20 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class RegisterPage extends AppCompatActivity {
 
@@ -32,100 +44,110 @@ public class RegisterPage extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getString(R.string.PREFS_NAME),0);
         editor=sharedPreferences.edit();
     }
-
     public void sumit_click(final View view) {
         Log.v("Tag", "submit click");
-        final String account =((EditText)findViewById(R.id.account)).getText().toString();
-        String passwd=((EditText)findViewById(R.id.passwd)).getText().toString().trim();
-        String passwd2=((EditText)findViewById(R.id.passwd2)).getText().toString().trim();
-        String CarType=((EditText)findViewById(R.id.cartype)).getText().toString();
-        String CarAge=((EditText)findViewById(R.id.carage)).getText().toString();
-        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(account).matches())
-        {
-            Log.v("Tag","bad account");
+        final String account = ((EditText) findViewById(R.id.account)).getText().toString();
+        String passwd = ((EditText) findViewById(R.id.passwd)).getText().toString().trim();
+        String passwd2 = ((EditText) findViewById(R.id.passwd2)).getText().toString().trim();
+        String CarType = ((EditText) findViewById(R.id.cartype)).getText().toString();
+        String CarAge = ((EditText) findViewById(R.id.carage)).getText().toString();
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(account).matches()) {
+            Log.v("Tag", "bad account");
             Toast.makeText(view.getContext(), "account is a invaild email", Toast.LENGTH_LONG).show();
             return;
         }
-        if(passwd==null||passwd.isEmpty())
-        {
-            Log.v("Tag","no passwd");
-            Toast.makeText(view.getContext(),"password can't be blank",Toast.LENGTH_LONG).show();
+        if (passwd == null || passwd.isEmpty()) {
+            Log.v("Tag", "no passwd");
+            Toast.makeText(view.getContext(), "password can't be blank", Toast.LENGTH_LONG).show();
             return;
         }
 
-        if(passwd2==null||passwd2.isEmpty())
-        {
+        if (passwd2 == null || passwd2.isEmpty()) {
             Log.v("Tag", "no passwd2");
-            Toast.makeText(view.getContext(),"please comfirm password",Toast.LENGTH_LONG).show();
+            Toast.makeText(view.getContext(), "please comfirm password", Toast.LENGTH_LONG).show();
             return;
         }
-        if(!passwd.equals(passwd2))
-        {
-            Log.v("Tag","passwd not equal");
-            Log.v("Tag","passwd"+passwd+".");
-            Log.v("Tag","passwd2"+passwd2+".");
-            Toast.makeText(view.getContext(),"two passwd different, please type again",Toast.LENGTH_LONG).show();
-            ((EditText)findViewById(R.id.passwd)).setText("");
-            ((EditText)findViewById(R.id.passwd2)).setText("");
+        if (!passwd.equals(passwd2)) {
+            Log.v("Tag", "passwd not equal");
+            Log.v("Tag", "passwd" + passwd + ".");
+            Log.v("Tag", "passwd2" + passwd2 + ".");
+            Toast.makeText(view.getContext(), "two passwd different, please type again", Toast.LENGTH_LONG).show();
+            ((EditText) findViewById(R.id.passwd)).setText("");
+            ((EditText) findViewById(R.id.passwd2)).setText("");
             return;
 
         }
-        if("".equals(CarType))
-        {
-            Toast.makeText(view.getContext(),"Car type can't be empty",Toast.LENGTH_LONG).show();
+        if ("".equals(CarType)) {
+            Toast.makeText(view.getContext(), "Car type can't be empty", Toast.LENGTH_LONG).show();
             return;
-        }
-        else if("".equals(CarAge))
-        {
-            Toast.makeText(view.getContext(),"Car age can't be empty",Toast.LENGTH_LONG).show();
+        } else if ("".equals(CarAge)) {
+            Toast.makeText(view.getContext(), "Car age can't be empty", Toast.LENGTH_LONG).show();
             return;
-        }
-        else
-        {
-            Log.v("Tag","save car info");
-            Log.v("Tag",CarType);
-            Log.v("Tag",CarAge);
+        } else {
+            Log.v("Tag", "save car info");
+            Log.v("Tag", CarType);
+            Log.v("Tag", CarAge);
             editor.putString("CarType1", CarType);
             editor.putString("CarAge1", CarAge);
             editor.putInt("CarInfoCounter", 1);
             editor.putInt("CarInfoNow", 1);
             editor.commit();
         }
-        //TODO encrypt pw
-        final String encry_pw=passwd;
+        String key = "this is a key";
+        SecretKey secret = new SecretKeySpec(key.getBytes(), "AES");
+        Cipher cipher = null;
+        byte[] cipherText = new byte[0];
+        try {
+            cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secret);
+            cipherText = cipher.doFinal(passwd.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+        final String encry_pw = new String(cipherText);
         //sent to server
 
-       API.creste_user(account,encry_pw,new ResponseListener(){
-           public void onResponse(JSONObject response)
-           {
-               try {
-                   String result =response.getString("result");
-                   if(result.equals("create users success"))
-                   {
-                       Toast.makeText(view.getContext(),"account created successfully,switching back to login page",Toast.LENGTH_LONG).show();
-                       Intent i = new Intent(getApplicationContext(), LoginPage.class);
-                       i.putExtra("account",account);
-                       Log.d("Tag",account);
-                       startActivity(i);
-                       finish();
-                   }
-               } catch (JSONException e) {
-                   e.printStackTrace();
-                   Log.d("Tag:Create", e.getMessage());
-               }
-           }
+        API.creste_user(account, encry_pw, new ResponseListener() {
+            public void onResponse(JSONObject response) {
+                try {
+                    String result = response.getString("result");
+                    if (result.equals("create users success")) {
+                        Toast.makeText(view.getContext(), "account created successfully,switching back to login page", Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(getApplicationContext(), LoginPage.class);
+                        i.putExtra("account", account);
+                        Log.d("Tag", account);
+                        startActivity(i);
+                        finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d("Tag:Create", e.getMessage());
+                }
+            }
 
-           public void onErrorResponse(VolleyError error){
-               Toast.makeText(view.getContext(),"account created error",Toast.LENGTH_LONG).show();
-               JSONObject response= null;
-               try {
-                   response = new JSONObject(new String(error.networkResponse.data));
-                   Toast.makeText(view.getContext(),response.getJSONObject("data").getString("account"),Toast.LENGTH_LONG).show();
-               } catch (JSONException e) {
-                   e.printStackTrace();
-               }
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(view.getContext(), "account created error", Toast.LENGTH_LONG).show();
+                JSONObject response = null;
+                try {
+                    response = new JSONObject(new String(error.networkResponse.data));
+                    Toast.makeText(view.getContext(), response.getJSONObject("data").getString("account"), Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-           }
-       });
+            }
+        });
     }
 }

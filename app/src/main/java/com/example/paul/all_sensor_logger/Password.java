@@ -202,7 +202,6 @@ public class Password extends Fragment
                 headers.put("Content-Type", "application/json; charset=UTF-8");
                 String token = sharedPreferences.getString("token", null);
                 if (token == null) {
-                    //TODO: cry no token
                 } else {
                     headers.put("Authorization", "Bearer" + token);
                 }

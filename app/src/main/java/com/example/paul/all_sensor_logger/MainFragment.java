@@ -395,7 +395,6 @@ public class MainFragment extends Fragment
                 dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        // TODO Auto-generated method stub
                         LayoutInflater inflater = LayoutInflater.from(getActivity());
                         final View v1 = inflater.inflate(R.layout.popup_layout_carlist, null);
 
@@ -433,7 +432,6 @@ public class MainFragment extends Fragment
                                 .setPositiveButton("None of above", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        // TODO Auto-generated method stub
                                         LayoutInflater inflater = LayoutInflater.from(getActivity());
                                         final View v1 = inflater.inflate(R.layout.popup_layout_profile, null);
 
@@ -532,7 +530,6 @@ public class MainFragment extends Fragment
 
                             @Override
                             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
-                                // TODO Auto-generated method stub
                                 arg2++;
                                 editor.putInt("CarInfoNow", arg2);
                                 editor.commit();
@@ -564,7 +561,6 @@ public class MainFragment extends Fragment
                 dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        // TODO Auto-generated method stub
                         // data upload ver 1
 
                         int CarInfoNow = sharedPreferences.getInt("CarInfoNow", 0);

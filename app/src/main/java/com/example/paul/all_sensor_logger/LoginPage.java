@@ -19,8 +19,18 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 public class LoginPage extends AppCompatActivity {
     //login page, this page should only be seen by uses that
@@ -99,8 +109,30 @@ public class LoginPage extends AppCompatActivity {
             Toast.makeText(view.getContext(),"password can't be blank",Toast.LENGTH_LONG).show();
             return;
         }
-        //TODO encrypt pw
-        final String encry_pw=passwd;
+        String key = "this is a key";
+        SecretKey secret = new SecretKeySpec(key.getBytes(), "AES");
+        Cipher cipher = null;
+        byte[] cipherText = new byte[0];
+        try {
+            cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secret);
+            cipherText = cipher.doFinal(passwd.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+        final String encry_pw = new String(cipherText);
         //sent to server
 
         login(account,encry_pw);
