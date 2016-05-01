@@ -24,6 +24,13 @@
         android:layout_gravity="center_horizontal" />
 
     <Button
+        android:layout_width="186dp"
+        android:layout_height="70dp"
+        android:text="voice record start"
+        android:id="@+id/voice_button"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout"

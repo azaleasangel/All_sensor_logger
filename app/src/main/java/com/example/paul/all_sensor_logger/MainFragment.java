@@ -10,8 +10,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.LocationManager;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -73,13 +77,18 @@ public class MainFragment extends Fragment
     private MainActivity mMainActivity;
     private Button startbutton;
     private Button logoutbutton;
+    private Button voicebutton;
+    private boolean record_start;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     private TextView user;
     private String path;
     private String ts;
     private int IsFileOpen = 0;
+    private MediaRecorder mRecorder = null;
+    private   Thread timer;
     private Sensor[] SensorList = new Sensor[5];
+
     @Override
     public void onAttach(Activity activity)
     {
@@ -101,13 +110,15 @@ public class MainFragment extends Fragment
         startbutton.setOnClickListener(startbuttonListener);
         logoutbutton=(Button)getView().findViewById(R.id.logout_button);
         logoutbutton.setOnClickListener(logoutbuttonListener);
+        voicebutton=(Button)getView().findViewById(R.id.voice_button);
+        voicebutton.setOnClickListener(voicebuttonListener);
         sharedPreferences = getActivity().getSharedPreferences(getString(R.string.PREFS_NAME), 0);
         editor=sharedPreferences.edit();
         user=(TextView)(getView().findViewById(R.id.user_name));
         user.append(sharedPreferences.getString("account","N//A"));
         /*get sensor*/
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-
+        record_start=false;
         IsFileOpen = 0;
 
         String a = "CarType1";
@@ -205,6 +216,9 @@ public class MainFragment extends Fragment
             close_all();
             IsFileOpen = 0;
         }
+        if (record_start) {
+            stopRecording();
+        }
     }
 
 
@@ -270,9 +284,92 @@ public class MainFragment extends Fragment
             startActivity(i);
         }
     };
+    private Button.OnClickListener voicebuttonListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            record_start=!record_start;
+            if (record_start) {
+                startRecording();
+                voicebutton.setText("stop voice");
+            } else {
+                stopRecording();
+                voicebutton.setText("start record");
+            }
+
+        }
+    };
+
+    private void startRecording() {
+        Long tsLong = System.currentTimeMillis()/1000;
+        ts = tsLong.toString();
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFile(Environment.getExternalStorageDirectory().getPath() + "/Sensorlogger/" + ts + ".3gp");
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            Log.e("Tag", "prepare() failed");
+        }
+        mRecorder.start();
+   /*     timer = new Thread() {
+            public void run () {
+                while(record_start){
+                    // do stuff in a separate thread
+                    try {
+                        Thread.sleep(30000);    // sleep for 30 seconds
+                        uiCallback.sendEmptyMessage(0);
+                    } catch (InterruptedException e) {
+                        System.out.println("Thread was inturrupted");
+                    }
+                    catch(Exception e) {
+                        //handle error
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        timer.start();*/
+
+    }
+
+    private Handler uiCallback = new Handler() {
+        public void handleMessage (Message msg) {
+            // do stuff with UI
+            mRecorder.stop();
+            mRecorder.release();
+            Long tsLong = System.currentTimeMillis()/1000;
+            ts = tsLong.toString();
+           //TODO kill oldest if too much file not uploaded
+            mRecorder = new MediaRecorder();
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setOutputFile(Environment.getExternalStorageDirectory().getPath() + "/Sensorlogger/" + ts + ".3gp");
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+            try {
+                mRecorder.prepare();
+            } catch (IOException e) {
+                Log.e("Tag", "prepare() failed");
+            }
+            mRecorder.start();
+        }
+
+        //TODO upload file
+    };
+
+
+    private void stopRecording() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+        timer.interrupt();
+    }
+
 
     private Button.OnClickListener startbuttonListener = new Button.OnClickListener() {
-
         @Override
 
         public void onClick(View v)
