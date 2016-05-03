@@ -6,16 +6,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Criteria;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -86,6 +95,19 @@ public class MainFragment extends Fragment {
     private boolean is_recording;
     private MediaRecorder mRecorder = null;
     private Thread timer;
+    private LocationManager mgr;
+    private String best;
+    private double lat;
+    private double lng;
+    private float speed;
+    private long time;
+    private double height;
+    private float bearing;
+    private float HDOP;
+    private float VDOP;
+    private float PDOP;
+    private int numOfSec;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -209,8 +231,7 @@ public class MainFragment extends Fragment {
             close_all();
             IsFileOpen = 0;
         }
-        if (is_recording)
-        {
+        if (is_recording) {
             stopRecording();
         }
     }
@@ -266,8 +287,8 @@ public class MainFragment extends Fragment {
     };
 
     private Button.OnClickListener logoutbuttonListener = new Button.OnClickListener() {
-        @Override
 
+        @Override
         public void onClick(View v) {
             String version = sharedPreferences.getString("VERSION", null);
             editor.clear();
@@ -281,7 +302,6 @@ public class MainFragment extends Fragment {
 
     private Button.OnClickListener recordbuttonListener = new Button.OnClickListener() {
         @Override
-
         public void onClick(View v) {
             is_recording = !is_recording;
             if (is_recording) {
@@ -308,7 +328,7 @@ public class MainFragment extends Fragment {
             Log.e("Tag", "prepare() failed");
         }
         timer = new Thread() {
-            public void run () {
+            public void run() {
                 while (is_recording) {
                     // do stuff in a separate thread
                     try {
@@ -323,7 +343,7 @@ public class MainFragment extends Fragment {
         };
 
         mRecorder.start();
-       // timer.start();
+        // timer.start();
     }
 
     private void stopRecording() {
@@ -333,8 +353,8 @@ public class MainFragment extends Fragment {
         timer.interrupt();
     }
 
-    private Handler uiCallback = new Handler () {
-        public void handleMessage (Message msg) {
+    private Handler uiCallback = new Handler() {
+        public void handleMessage(Message msg) {
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
@@ -367,7 +387,13 @@ public class MainFragment extends Fragment {
                 Log.d("Tag", sharedPreferences.getString("token", null));
                 startbutton.setText("Start");
                 mSensorManager.unregisterListener(mysensorListener);
-
+                try {
+                    mgr.removeUpdates(locationlistener);
+                    mgr.removeNmeaListener(NmeaListener);
+                    mgr.removeGpsStatusListener(GPSstatusListener);
+                } catch (SecurityException e) {
+                    Log.e("PERMISSION_EXCEPTION","PERMISSION_NOT_GRANTED");
+                }
                 int counter = sharedPreferences.getInt("CarInfoNow", 0);
                 String a = "CarType" + counter;
                 String b = "CarAge" + counter;
@@ -596,6 +622,8 @@ public class MainFragment extends Fragment {
 
             } else {
                 /*Start  listening*/
+                initialLocationManager();
+
                 for (int i = 0; i < 5; i++) {
                     SensorList[i] = null;
                 }
@@ -762,5 +790,79 @@ public class MainFragment extends Fragment {
             SensorList[i] = null;
         }
     }
+
+    private void initialLocationManager() {
+        if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mgr = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        best = mgr.getBestProvider(criteria, true);
+        Location location = mgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (best != null)
+            location = mgr.getLastKnownLocation(best);
+        mgr.requestLocationUpdates("gps", 0, 0, locationlistener); // 讓locationlistener處理資料有變化時的事情
+
+        mgr.addGpsStatusListener(GPSstatusListener);//to get GPS status
+        mgr.addNmeaListener(NmeaListener);
+        Log.d("GPS","GPS Ready");
+    }
+
+    private final LocationListener locationlistener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            lat = location.getLatitude();
+            lng = location.getLongitude();
+            speed = location.getSpeed() * (float) (3.6);
+            time = location.getTime();
+
+            //calculate time offset between system and GPS
+
+
+            lat = location.getLatitude();
+            lng = location.getLongitude();
+            speed = location.getSpeed() * (float) (3.6);
+            time = location.getTime();
+            height = location.getAltitude();
+            bearing = location.getBearing();
+
+            //GpsWriter.writeGpsFile(time, lat, lng, speed, height, bearing, HDOP, VDOP, PDOP);
+            Log.d("GPS",lat+","+lng);
+        }
+
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            // TODO Auto-generated method stub
+        }
+
+    };
+
+    private final GpsStatus.Listener GPSstatusListener = new GpsStatus.Listener() {
+        @Override
+        public void onGpsStatusChanged(int event) {
+            // TODO Auto-generated method stub
+        }
+    };
+
+    private final GpsStatus.NmeaListener NmeaListener = new GpsStatus.NmeaListener() {
+        @Override
+        public void onNmeaReceived(long timestamp, String nmea) {
+            // TODO Auto-generated method stub
+        }
+    };
 }
+
 
