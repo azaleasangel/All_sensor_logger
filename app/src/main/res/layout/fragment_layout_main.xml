@@ -24,8 +24,14 @@
         android:layout_gravity="center_horizontal" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="186dp"
+        android:layout_height="70dp"
+        android:text="Record Start"
+        android:id="@+id/record_button"
+        android:layout_gravity="center_horizontal" />
+    <Button
+        android:layout_width="186dp"
+        android:layout_height="70dp"
         android:text="Logout"
         android:id="@+id/logout_button"
         android:layout_gravity="center_horizontal"
