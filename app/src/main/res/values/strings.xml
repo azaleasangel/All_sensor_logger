@@ -3,4 +3,8 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="URL">http://cswwwdev.cs.nctu.edu.tw:7122</string>
     <string name="PREFS_NAME">my_pref</string>
+    <string name="title_activity_fake_login">FakeLogin</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
