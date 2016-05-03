@@ -29,12 +29,12 @@ public class LoginPage extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     String result="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(this,NetworkCheckService.class);
         startService(intent);
-
 
 
         sharedPreferences = getSharedPreferences(getString(R.string.PREFS_NAME),0);
@@ -47,9 +47,11 @@ public class LoginPage extends AppCompatActivity {
             if((account!=null)&&(passwd!=null))
             {
                 //test auto login
-                login(account,passwd);
-                    //if fail , wait for user login
-                }
+                //login(account,passwd);
+                Intent i = new Intent(getApplicationContext(), FakeLogin.class);
+                startActivity(i);
+                //if fail , wait for user login
+            }
         }
         else{
             //test fake login
