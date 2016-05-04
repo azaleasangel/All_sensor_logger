@@ -48,6 +48,7 @@ public class LoginPage extends AppCompatActivity {
             {
                 //test auto login
                 //login(account,passwd);
+                Log.d("TAG","online ");
                 Intent i = new Intent(getApplicationContext(), FakeLogin.class);
                 startActivity(i);
                 //if fail , wait for user login
@@ -57,11 +58,13 @@ public class LoginPage extends AppCompatActivity {
             //test fake login
             if(offline_login())
             {
+                Log.d("TAG","offline login");
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(i);
             }
             else
             {
+                Log.d("TAG","offline ");
                 Toast.makeText(getApplicationContext(), "please connect to network and try again" + result, Toast.LENGTH_LONG).show();
               //  ( (Button)findViewById(R.id.loginbtn)).setEnabled(false);
 
@@ -83,7 +86,7 @@ public class LoginPage extends AppCompatActivity {
         String account=sharedPreferences.getString("account",null);
         String passwd=sharedPreferences.getString("passwd",null);
         Log.d("Tag","fake login");
-        return (!(account==null)||(passwd==null));
+        return !((account==null)||(passwd==null));
     }
 
     public void login_click(final View view) {

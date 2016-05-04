@@ -41,6 +41,11 @@ public class FakeLogin extends AppCompatActivity {
                 //if fail , wait for user login
             }
         }
+        else
+        {
+            Intent i = new Intent(getApplicationContext(), LoginPage.class);
+            startActivity(i);
+        }
         setContentView(R.layout.activity_fake_login);
     }
     void login(final String account, final String passwd)

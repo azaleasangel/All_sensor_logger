@@ -184,7 +184,7 @@ public class API {
 
     public static void check_token_valid(final String token, final ResponseListener res)
     {
-        final JsonObjectRequest check_token = new JsonObjectRequest(Request.Method.POST, aURL + "/api/auth",new JSONObject() , new Response.Listener<JSONObject>() {
+        final JsonObjectRequest check_token = new JsonObjectRequest(Request.Method.GET, aURL + "/api/auth",new JSONObject() , new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 res.onResponse(response);
