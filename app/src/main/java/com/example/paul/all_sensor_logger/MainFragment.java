@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -23,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -42,6 +46,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.example.paul.all_sensor_logger.bt.BTSerialDevice;
+import com.example.paul.all_sensor_logger.bt.BTSerialPortCommunicationService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +60,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /*Tab page class inhreits Fragment*/
 public class MainFragment extends Fragment {
@@ -94,7 +101,10 @@ public class MainFragment extends Fragment {
     private Thread timer;
     private LocationManager mgr;
     private String best;
-    private int REQUEST_ENABLE_BT = 0;
+
+
+
+
 
 
     @Override
@@ -112,7 +122,7 @@ public class MainFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        findBT();
+        //findBT();
 
         sharedPreferences = getActivity().getSharedPreferences(getString(R.string.PREFS_NAME), 0);
         editor = sharedPreferences.edit();
@@ -856,7 +866,12 @@ public class MainFragment extends Fragment {
         recordbutton.setOnClickListener(recordbuttonListener);
     }
 
-    private void findBT()
+
+
+
+
+
+    /*private void findBT()
     {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
@@ -882,6 +897,7 @@ public class MainFragment extends Fragment {
         ListView listView = (ListView) v1.findViewById(R.id.car_list);
         listView.setAdapter(mArrayAdapter);
 
+
         final AlertDialog dialog_list = new AlertDialog.Builder(getActivity())
                 .setTitle("Choose device")
                 .setView(v1)
@@ -906,7 +922,7 @@ public class MainFragment extends Fragment {
                 dialog_list.cancel();
             }
         });
-    }
+    }*/
 }
 
 
