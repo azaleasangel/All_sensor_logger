@@ -15,6 +15,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.paul.all_sensor_logger.bt.BTSerialPortCommunicationService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,8 @@ public class LoginPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(this,NetworkCheckService.class);
+        startService(intent);
+        intent = new Intent(this,BTSerialPortCommunicationService.class);
         startService(intent);
 
 

@@ -2,9 +2,14 @@ package com.example.paul.all_sensor_logger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -21,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -40,6 +46,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.example.paul.all_sensor_logger.bt.BTSerialDevice;
+import com.example.paul.all_sensor_logger.bt.BTSerialPortCommunicationService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +59,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /*Tab page class inhreits Fragment*/
 public class MainFragment extends Fragment {
@@ -93,6 +103,10 @@ public class MainFragment extends Fragment {
     private String best;
 
 
+
+
+
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -107,6 +121,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        //findBT();
 
         sharedPreferences = getActivity().getSharedPreferences(getString(R.string.PREFS_NAME), 0);
         editor = sharedPreferences.edit();
@@ -850,7 +866,63 @@ public class MainFragment extends Fragment {
         recordbutton.setOnClickListener(recordbuttonListener);
     }
 
-    ;
+
+
+
+
+
+    /*private void findBT()
+    {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(getContext(), "The device don't support bluetooth", Toast.LENGTH_LONG).show();
+        }
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+        ArrayAdapter<String> mArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_expandable_list_item_1);
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+            }
+        }
+
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        final View v1 = inflater.inflate(R.layout.popup_layout_carlist, null);
+        ListView listView = (ListView) v1.findViewById(R.id.car_list);
+        listView.setAdapter(mArrayAdapter);
+
+
+        final AlertDialog dialog_list = new AlertDialog.Builder(getActivity())
+                .setTitle("Choose device")
+                .setView(v1)
+                .setOnKeyListener(new android.content.DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        switch (keyCode) {
+                            case KeyEvent.KEYCODE_BACK:
+                                Log.v("Tag", "KEYCODE_BACK");
+                                return true;
+                        }
+                        return false;
+                    }
+                })
+                .show();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {//响应listview中的item的点击事件
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                // TODO Auto-generated method stub
+
+                dialog_list.cancel();
+            }
+        });
+    }*/
 }
 
 

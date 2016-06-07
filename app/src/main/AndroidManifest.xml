@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <application
         android:name=".VolleyController"
         android:allowBackup="true"
@@ -40,11 +42,14 @@
             </intent-filter>
         </service>
 
+
         <activity
             android:name=".FakeLogin"
             android:label="@string/title_activity_fake_login"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <service android:name="com.example.paul.all_sensor_logger.bt.BTSerialPortCommunicationService" android:enabled="true"/>
     </application>
 
 </manifest>
