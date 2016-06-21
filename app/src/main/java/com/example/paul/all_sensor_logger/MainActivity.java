@@ -66,9 +66,9 @@ public class MainActivity extends FragmentActivity{
         setContentView(R.layout.activity_main);
 
 
-        initialBTManager();
+        //initialBTManager();
 
-        LayoutInflater inflater = LayoutInflater.from(this);
+       /* LayoutInflater inflater = LayoutInflater.from(this);
         final View v1 = inflater.inflate(R.layout.popup_bt, null);
         listView = (ListView) v1.findViewById(R.id.listView);
         mAdapter = new CustomAdapter(this, mObjects);
@@ -127,7 +127,7 @@ public class MainActivity extends FragmentActivity{
 
                 dialog_list.cancel();
             }
-        });
+        });*/
 
         /*deal with Layout*/
         //get contorl of TabHost
@@ -155,7 +155,7 @@ public class MainActivity extends FragmentActivity{
 
     }
     //BLUETOOTH
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+    /*private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName,
                                        IBinder service) {
@@ -202,7 +202,7 @@ public class MainActivity extends FragmentActivity{
 
                // mBluetoothService.updatBoundedBTDevices();
                // setupListView();
-            } /*else if (BTSerialPortCommunicationService.ACTION_ACCEROMETER_DATA.equals(action)) {
+            }*/ /*else if (BTSerialPortCommunicationService.ACTION_ACCEROMETER_DATA.equals(action)) {
                 final float values [] = intent.getFloatArrayExtra(BTSerialPortCommunicationService.EXTRA_DATA);
                 final String addr = intent.getStringExtra(BTSerialPortCommunicationService.EXTRA_NAME);
                 final int position = findBTDevice(addr);
@@ -333,11 +333,11 @@ public class MainActivity extends FragmentActivity{
                         }
                     }
                 }
-            }*/
+            }
         }
 
-    };
-    private void initialBTManager() {
+    };*/
+    /*private void initialBTManager() {
         //啟動BT service
         Log.d("initialBTManager", "init BT");
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -361,7 +361,7 @@ public class MainActivity extends FragmentActivity{
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);*/
 
         //BT data service
         /*intentFilter.addAction(BTSerialPortCommunicationService.ACTION_ACCEROMETER_DATA);
@@ -369,7 +369,7 @@ public class MainActivity extends FragmentActivity{
         intentFilter.addAction(BTSerialPortCommunicationService.ACTION_GYROSCOPE_DATA);
         intentFilter.addAction(BTSerialPortCommunicationService.ACTION_GPS_DATA);*/
 
-        return intentFilter;
+        /*return intentFilter;
     }
 
     private void setupListView() {
@@ -462,7 +462,7 @@ public class MainActivity extends FragmentActivity{
             }
 
         }
-    };
+    };*/
 
     /*@Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -482,14 +482,14 @@ public class MainActivity extends FragmentActivity{
 
     }*/
 
-    public void resetBTConnection() {
+    /*public void resetBTConnection() {
         try {
             mBluetoothService.disconnect();
             mBluetoothService.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        }*/
         /*for (BTSerialDevice d : mDevices) {
             if (d.getGPSWriter() != null) {
                 d.getGPSWriter().closefile();
@@ -504,20 +504,20 @@ public class MainActivity extends FragmentActivity{
                 d.getGyroWriter().closefile();
             }
         }*/
-        mDevices.clear();
+       /* mDevices.clear();
         mFlags.clear();
         mConnectedDeviceID.clear();
-    }
+    }*/
 
 
     public void onDestroy(){
         super.onDestroy();
-        if (mServiceConnection != null)
+        /*if (mServiceConnection != null)
             unbindService(mServiceConnection);
         Intent intent = new Intent(MainActivity.this,NetworkCheckService.class);
         stopService(intent);
         intent = new Intent(MainActivity.this, BTSerialPortCommunicationService.class);
-        stopService(intent);
+        stopService(intent);*/
 
 
     }

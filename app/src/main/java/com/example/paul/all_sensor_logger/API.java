@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class API {
 
-    static  private String aURL="http://cswwwdev.cs.nctu.edu.tw:7122";
+    static  private String aURL="http://140.113.203.226/paul";
 
     public static  void get_argeement_version(final ResponseListener res)
     {
