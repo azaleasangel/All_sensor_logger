@@ -16,12 +16,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.paul.all_sensor_logger.bt.BTSerialPortCommunicationService;
+import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.nullwire.trace.ExceptionHandler.register;
 
 public class LoginPage extends AppCompatActivity {
     //login page, this page should only be seen by uses that
@@ -38,8 +41,7 @@ public class LoginPage extends AppCompatActivity {
         startService(intent);
         intent = new Intent(this,BTSerialPortCommunicationService.class);
         startService(intent);
-
-
+        ExceptionHandler.register(this, "http://nol.cs.nctu.edu.tw/~pstsao/server.php");
         sharedPreferences = getSharedPreferences(getString(R.string.PREFS_NAME),0);
         editor=sharedPreferences.edit();
 
@@ -86,7 +88,7 @@ public class LoginPage extends AppCompatActivity {
 
     boolean offline_login()
     {
-        String account=sharedPreferences.getString("account",null);
+        String account = sharedPreferences.getString("account",null);
         String passwd=sharedPreferences.getString("passwd",null);
         Log.d("Tag","fake login");
         return !((account==null)||(passwd==null));
@@ -118,10 +120,6 @@ public class LoginPage extends AppCompatActivity {
         //switch to register page
         Intent i = new Intent(getApplicationContext(), RegisterPage.class);
         startActivity(i);
-    }
-
-    public void account_click(View view) {
-        ((EditText) findViewById(R.id.account)).setText("");
     }
 
     void login(final String account, final String passwd)

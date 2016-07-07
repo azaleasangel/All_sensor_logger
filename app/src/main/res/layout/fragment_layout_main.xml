@@ -14,27 +14,39 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Current User:"
-        android:id="@+id/user_name" />
+        android:id="@+id/user_name"
+        android:textSize="40dp"/>
 
     <Button
         android:layout_width="186dp"
         android:layout_height="70dp"
         android:text="Start"
         android:id="@+id/start_button"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:textSize="30dp"
+        />
 
     <Button
         android:layout_width="186dp"
         android:layout_height="70dp"
-        android:text="Record Start"
+        android:text="Record"
         android:id="@+id/record_button"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:textSize="30dp"/>
     <Button
         android:layout_width="186dp"
         android:layout_height="70dp"
         android:text="Logout"
         android:id="@+id/logout_button"
         android:layout_gravity="center_horizontal"
+        android:textSize="30dp"
         />
-
+    <Button
+        android:layout_width="186dp"
+        android:layout_height="70dp"
+        android:text="D I E"
+        android:id="@+id/die_button"
+        android:layout_gravity="center_horizontal"
+        android:textSize="30dp"
+        />
 </LinearLayout>

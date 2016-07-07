@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -131,7 +132,7 @@ public class MainFragment extends Fragment {
 
         //set text view
         user = (TextView) (getView().findViewById(R.id.user_name));
-        user.append(sharedPreferences.getString("account", "N//A"));
+        user.append("\n"+sharedPreferences.getString("account", "N//A"));
 
         //flags
         is_recording = false;
@@ -300,6 +301,15 @@ public class MainFragment extends Fragment {
         }
     };
 
+    private Button.OnClickListener  diebuttonListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+           String a=null;
+            a.length();
+        }
+    };
+
+
     private Button.OnClickListener recordbuttonListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -307,13 +317,14 @@ public class MainFragment extends Fragment {
             if (is_recording) {
                 startRecording();
                 recordbutton.setText("Stop record");
+                recordbutton.setBackgroundColor(Color.RED);
             } else {
                 stopRecording();
                 recordbutton.setText("Start record");
+                recordbutton.setBackgroundResource(android.R.drawable.btn_default);
             }
         }
     };
-
     private void startRecording() {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -394,7 +405,7 @@ public class MainFragment extends Fragment {
 
         public void onClick(View v) {
             if (startbutton.getText().equals("Stop")) {
-
+                startbutton.setBackgroundResource(android.R.drawable.btn_default);
                 Log.d("Tag", "Stop");
                 Log.d("Tag", sharedPreferences.getString("token", null));
                 startbutton.setText("Start");
@@ -631,6 +642,8 @@ public class MainFragment extends Fragment {
 
             } else {
                 /*Start  listening*/
+                startbutton.setBackgroundColor(Color.RED);
+
                 initialLocationManager();
 
                 for (int i = 0; i < 5; i++) {
@@ -729,7 +742,7 @@ public class MainFragment extends Fragment {
             final String token = sharedPreferences.getString("token", null);
             API.upload_file(filepath, token, CarType, CarAge, filename, sharedPreferences.getString("account", null), new ResponseListener() {
                 public void onResponse(JSONObject response) {
-                    File file = new File(filepath);
+                    File file = new File(filepath+"/"+filename);
                     file.delete();
                     Toast.makeText(getContext(), "upload success@@", Toast.LENGTH_SHORT).show();
                 }
@@ -864,6 +877,7 @@ public class MainFragment extends Fragment {
         logoutbutton.setOnClickListener(logoutbuttonListener);
         recordbutton = (Button) getView().findViewById(R.id.record_button);
         recordbutton.setOnClickListener(recordbuttonListener);
+        getView().findViewById((R.id.die_button)).setOnClickListener(diebuttonListener);
     }
 
 
@@ -917,8 +931,6 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                // TODO Auto-generated method stub
-
                 dialog_list.cancel();
             }
         });

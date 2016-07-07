@@ -29,6 +29,7 @@ import com.example.paul.all_sensor_logger.bt.BTSerialDevice;
 import com.example.paul.all_sensor_logger.bt.BTSerialPortCommunicationService;
 import com.example.paul.all_sensor_logger.views.CustomAdapter;
 import com.example.paul.all_sensor_logger.views.ModelObject;
+import com.nullwire.trace.ExceptionHandler;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -65,7 +66,7 @@ public class MainActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        ExceptionHandler.register(this, "http://nol.cs.nctu.edu.tw/~pstsao/server.php");
         //initialBTManager();
 
        /* LayoutInflater inflater = LayoutInflater.from(this);

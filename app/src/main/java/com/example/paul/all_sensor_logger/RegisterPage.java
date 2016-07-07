@@ -13,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.nullwire.trace.ExceptionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +29,7 @@ public class RegisterPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ExceptionHandler.register(this, "http://nol.cs.nctu.edu.tw/~pstsao/server.php");
         setContentView(R.layout.activity_register_page);
         sharedPreferences = getSharedPreferences(getString(R.string.PREFS_NAME),0);
         editor=sharedPreferences.edit();
